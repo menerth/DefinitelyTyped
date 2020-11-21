@@ -41,6 +41,13 @@ declare namespace Xrm {
          */
         Page: Page;
 
+
+        /**
+         * Provides app-related methods.
+         * @see {@link https://docs.microsoft.com/en-us/powerapps/developer/model-driven-apps/clientapi/reference/xrm-app External Link: Xrm.App (Client API reference)}
+         */
+        App: App;
+
         /** Provides navigation-related methods.
          */
         Navigation: Navigation;
@@ -938,6 +945,85 @@ declare namespace Xrm {
          * The views to be available in the view picker.Only system views are supported.
          */
         viewIds?: string[];
+    }
+
+    namespace App {
+        interface GlobalNotificationAction {
+            /**
+             * (Optional) The label for the action in the message.
+             */
+            actionLabel?: string,
+            /**
+             * (Optional) The function to execute when the action label is clicked.
+             */
+            eventHandler?: Function
+        }
+
+        interface GlobalNotificationOptions {
+            /**
+             * (Optional) Contains the following attributes:
+             * * actionLabel: (Optional) The label for the action in the message.
+             * * eventHandler: (Optional) The function to execute when the action label is clicked.
+             */
+            action?: Xrm.App.GlobalNotificationAction,
+            /**
+             * Defines the level of notification. Valid values are:
+             * * 1: Success
+             * * 2: Error
+             * * 3: Warning
+             * * 4: Information
+             */
+            level: XrmEnum.GlobalNotificationLevel,
+            /**
+             * The message to display in the notification.
+             */
+            message: string,
+            /**
+             * (Optional) Indicates whether or not the user can close or dismiss the notification. If you don't specify this parameter,
+             * users can't close or dismiss the notification by default.
+             */
+            showCloseButton?: boolean,
+            /**
+             * Defines the type of notification. Currently, only a value of **2** is supported, which displays a message bar at the top of the app.
+             */
+            type: XrmEnum.GlobalNotificationType
+        }
+    }
+
+    /**
+     * Interface for the Xrm.App API
+     * @see {@link https://docs.microsoft.com/en-us/powerapps/developer/model-driven-apps/clientapi/reference/xrm-app External Link: Xrm.Utility (Client API reference)}
+     */
+    interface App {
+        /**
+         * Displays an error, information, warning, or success notification for an app,
+         * and lets you specify actions to execute based on the notification.
+         * @param notification The notification to add.
+         * @remarks The object contains the following attributes:
+         * * action: (Optional) *Object*. Contains the following attributes:
+         *           * actionLabel: (Optional) *String*. The label for the action in the message.
+         *           * eventHandler: (Optional) *Function reference*. The function to execute when the action label is clicked.
+         *
+         * * level: *Number*. Defines the level of notification. Valid values are:
+         *           * 1: Success
+         *           * 2: Error
+         *           * 3: Warning
+         *           * 4: Information
+         *
+         * * message: *String*. The message to display in the notification.
+         * * showCloseButton: (Optional) Boolean. Indicates whether or not the user can close or dismiss the notification. If you don't specify this parameter, users can't close or dismiss the notification by default.
+         * * type: *Number*. Defines the type of notification. Currently, only a value of **2** is supported, which displays a message bar at the top of the app.
+         * @returns GUID of the notification (without brackets) after resolving.
+         * @see {@link https://docs.microsoft.com/en-us/powerapps/developer/model-driven-apps/clientapi/reference/xrm-app/addglobalnotification External Link: addGlobalNotification (Client API reference)}
+         */
+        addGlobalNotification(notification: Xrm.App.GlobalNotificationOptions): Async.PromiseLike<string>;
+
+        /**
+         * Clears a notification in the app.
+         * @param uniqueId The ID to use to clear a specific notification that was set using addGlobalNotification {@link Xrm.App.addGlobalNotification}.
+         * @see {@link https://docs.microsoft.com/en-us/powerapps/developer/model-driven-apps/clientapi/reference/xrm-app/clearglobalnotification External Link: clearGlobalNotification (Client API reference)}
+         */
+        clearGlobalNotification(uniqueId: string): Async.PromiseLike<any>;
     }
 
     /**
@@ -4268,12 +4354,12 @@ declare namespace Xrm {
             subtitle?: string;
 
             /**
-             * (Optional) The title to be displyed in the confirmation dialog.
+             * (Optional) The title to be displayed in the confirmation dialog.
              */
             title?: string;
 
             /**
-             * The message to be displyed in the alert dialog.
+             * The message to be displayed in the alert dialog.
              */
             text: string;
         }
@@ -4520,7 +4606,7 @@ declare namespace Xrm {
             /**
              * Type of view to load. Specify "savedquery" or "userquery".
              * */
-            viewType?: "savedquery" |"userquery";
+            viewType?: "savedquery" | "userquery";
         }
 
         interface PageInputHtmlWebResource {
@@ -5426,7 +5512,7 @@ declare namespace XrmEnum {
         Finished = "finished"
     }
 
-     /**
+    /**
       * Constant Enum: Command Bar Display options for Xrm.Url.FormOpenParameters.cmdbar, Xrm.Url.ViewOpenParameters.cmdbar, and Xrm.Utility.FormOpenParameters.cmdbar.
       * @see {@link Xrm.Url.CmdBarDisplay}
       */
@@ -5462,5 +5548,16 @@ declare namespace XrmEnum {
         Audio = "audio",
         Video = "video",
         Image = "image"
+    }
+
+    const enum GlobalNotificationLevel {
+        Success = 1,
+        Error = 2,
+        Warning = 3,
+        Information = 4
+    }
+
+    const enum GlobalNotificationType {
+        TopOfTheApp = 2
     }
 }
